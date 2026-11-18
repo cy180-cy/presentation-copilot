@@ -18,13 +18,30 @@ from services.runtime_config import DEFAULT, validate
     ('生成 7 页 PPT', 7), ('6 slides', 6), ('6 pages', 6), ('做5页', 5), ('做8页', 8),
     ('第6页介绍产品', None), ('6到8页', None), ('6-8页', None), ('6页左右', None), ('最多6页', None),
     ('6页或8页', None), ('6.5页', None), ('about 6 pages', None), ('-6页', None),
+    ('帮我生成一份ppt 内容是agent的记忆 三页', 3), ('生成三页PPT', 3),
+    ('PPT三页', 3), ('三 页', 3), ('做两页', 2), ('共十页', 10),
+    ('第三页介绍记忆', None), ('第 三页介绍记忆', None), ('第 3页介绍记忆', None),
+    ('三到五页', None), ('3到五页', None), ('三到5页', None), ('三-五页', None),
+    ('三页左右', None), ('最多三页', None), ('大约三页', None), ('三页或五页', None),
+    ('二点五页', None), ('两三页', None), ('负三页', None), ('-三页', None),
+    ('三页，3页', 3), ('三页，5页', None), ('介绍三个产品', None),
 ])
 def test_conservative_count(text, expected):
     assert planning.requested_pages(text) == expected
     result = planning.resolve(text, {'default_auto_pages': 6, 'pages': 8})
     assert result['requested_pages'] == expected
-    assert result['planned_page_count'] == (expected if expected is not None else 6)
+    assert result['planned_page_count'] == min(expected if expected is not None else 6, 8)
     assert result['page_count_source'] == ('user_explicit' if expected is not None else 'default_auto')
+
+
+@pytest.mark.parametrize('text,count', [('十一页', 11), ('二十三页', 23), ('五十页', 50),
+                                      ('一百零五页', 105), ('一千零二十页', 1020)])
+def test_chinese_count_respects_existing_limits(text, count):
+    plan = planning.resolve(text, {'default_auto_pages': 5, 'pages': 10}, 3)
+    assert plan['requested_pages'] == plan['target_pages'] == count
+    assert plan['resolved_pages'] == 3
+    assert plan['page_count_source'] == 'user_explicit'
+    assert plan['page_limit_reason'] == 'max_pages_and_budget'
 
 
 def test_old_config_read_defaults_without_mutating_max_or_policy(admin):
@@ -138,9 +155,12 @@ def text_provider(monkeypatch):
 @pytest.mark.parametrize('kind,route,text,target', [
     ('idea','outline','AI Agent发展趋势',6), ('idea','outline/stream','生成5页PPT',5),
     ('idea','outline/stream','生成8页PPT',8), ('outline','outline','介绍6个产品',6),
+    ('idea','outline/stream','帮我生成一份ppt 内容是agent的记忆 三页',3),
+    ('idea','outline','生成三页PPT',3), ('outline','outline/stream','三页PPT大纲',3),
     ('outline','outline/stream','2026年趋势',6), ('descriptions','outline','销售增长20%',6),
     ('descriptions','outline/stream','生成 7 页 PPT',7),
     ('descriptions','from-description','生成5页PPT',5),
+    ('descriptions','outline','三页演示说明',3), ('descriptions','from-description','生成三页PPT',3),
 ])
 def test_real_route_mock_provider_snapshot_and_owner(app, planning_client, text_provider, kind, route, text, target):
     from models import db, Task, TaskTrace, Page, VisitorCall

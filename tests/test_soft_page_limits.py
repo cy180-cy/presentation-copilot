@@ -23,8 +23,19 @@ def setup(app,admin,credits=1000,text=100,image=100,visitor=None,parallel=False)
     return a
 
 
+@pytest.fixture(autouse=True)
+def isolated_request_frequency(app):
+    # The shared app outlives individual isolated databases and visitor sessions.
+    # Keep each scenario's request window independent without changing its limits.
+    app.extensions.pop('pc_request_frequency', None)
+    yield
+    app.extensions.pop('pc_request_frequency', None)
+
+
 @pytest.mark.parametrize('prompt,images,credits,target,actual,reason',[
     ('节水',10,1000,5,5,'none'),('节水',3,1000,5,3,'budget'),
+    ('帮我生成一份ppt 内容是agent的记忆 三页',10,1000,3,3,'none'),
+    ('生成三页PPT',2,1000,3,2,'budget'),
     ('生成8页PPT',10,1000,8,8,'none'),('生成12页PPT',10,1000,12,10,'max_pages'),
     ('8 slides',6,1000,8,6,'budget'),('12 pages',7,1000,12,7,'max_pages_and_budget'),
     ('介绍6个产品',10,1000,5,5,'none'),('生成8页PPT',10,25.6,8,6,'budget')])

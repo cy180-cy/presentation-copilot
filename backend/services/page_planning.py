@@ -12,22 +12,55 @@ class PagePlanningError(ValueError):
     pass
 
 
+_CHINESE_DIGITS = dict(zip('零〇一二两三四五六七八九', (0, 0, 1, 2, 2, 3, 4, 5, 6, 7, 8, 9)))
+_CHINESE_UNITS = {'十': 10, '百': 100, '千': 1000, '万': 10000}
+_CHINESE_NUMERALS = ''.join(_CHINESE_DIGITS) + ''.join(_CHINESE_UNITS)
+
+
+def _page_quantity(value):
+    if value.isascii():
+        return int(value) if len(value) <= 4 else 10000
+    total, digit, previous_unit = 0, None, 100000
+    for char in value:
+        if char in _CHINESE_DIGITS:
+            # Consecutive nonzero digits (e.g. 两三页) are not an exact count.
+            if digit not in (None, 0):
+                return None
+            digit = _CHINESE_DIGITS[char]
+        else:
+            unit = _CHINESE_UNITS[char]
+            if unit >= previous_unit or digit == 0:
+                return None
+            if digit is None:
+                if unit != 10 or total:
+                    return None
+                digit = 1
+            total += digit * unit
+            digit, previous_unit = None, unit
+    return total + (digit or 0)
+
+
 def requested_pages(text):
     # Only explicit quantities with page units. Ordinals, ranges and qualified
     # quantities are not exact requests; unrelated business numbers are ignored.
     matches = list(re.finditer(r'(?<![\w.第负\-])([0-9]+)\s*(?:页|pages?\b|slides?\b)', text, re.I))
     # Chinese words have no spaces, so allow them before a number except 第/负.
     matches += list(re.finditer(r'(?<=[\u4e00-\u9fff])([0-9]+)\s*页', text))
+    matches += list(re.finditer(
+        rf'(?<![0-9.{_CHINESE_NUMERALS}第负点\-])([{_CHINESE_NUMERALS}]+)\s*页', text))
     candidates = {}
     for match in matches:
         before, after = text[:match.start()], text[match.end():]
-        if before.endswith(('第', '负')):
+        if re.search(r'(?:第|负)\s*$', before):
             continue
-        if (re.search(r'(?:至少|最多|大约|约|不超过|不少于|不多于|第|负|[\d.]\s*[-–~～至到])\s*$', before)
+        if (re.search(rf'(?:至少|最多|大约|约|不超过|不少于|不多于|第|负|[\d.{_CHINESE_NUMERALS}]\s*[-–~～至到])\s*$', before)
                 or re.match(r'\s*(?:以内|以上|以下|左右|起|[-–~～至到或])', after)
                 or re.search(r'(?:at least|at most|about|up to)\s*$', before, re.I)):
             return None
-        candidates[match.start()] = int(match.group(1)) if len(match.group(1)) <= 4 else 10000
+        value = _page_quantity(match.group(1))
+        if value is None:
+            return None
+        candidates[match.start()] = value
     values = set(candidates.values())
     return next(iter(values)) if len(values) == 1 else None
 
