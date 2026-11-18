@@ -264,6 +264,9 @@ def create_local_app(live, port, runtime_config=None):
                 return error
     @app.after_request
     def redact_response(response):
+        # Public license/metadata files must be readable before redaction.
+        if response.direct_passthrough and request.path.startswith("/open-source/"):
+            response.direct_passthrough = False
         secrets = [os.getenv(name) for name in ('TEXT_API_KEY', 'IMAGE_API_KEY') if os.getenv(name)]
         if response.is_json and response.status_code >= 500 and not (
                 isinstance(response.get_json(), dict) and response.get_json().get('error', {}).get('code') in

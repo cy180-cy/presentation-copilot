@@ -14,3 +14,5 @@
 `fee0c78a32931ee24708bd378f63db8d5980cc88a2ad96a95ab003568ea1c7dc`。
 
 该修改版包含产品界面、匿名访客归属、任务追踪、预算估算、图片式导出、资源保护和部署工具；许可证及依赖说明见原源码获取说明和第三方声明。内部 Git 历史及私有运行资料未导入本仓库。
+
+- Public source metadata/license file responses also pass through the existing secret redaction hook safely; three socket-disabled HTTP regressions passed. No model calls.
