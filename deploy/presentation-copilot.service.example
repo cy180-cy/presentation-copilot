@@ -1,0 +1,34 @@
+[Unit]
+Description=Presentation Copilot single-instance Waitress
+After=network.target
+StartLimitIntervalSec=300
+StartLimitBurst=3
+
+[Service]
+Type=simple
+User=REPLACE_SERVICE_USER
+Group=REPLACE_SERVICE_GROUP
+WorkingDirectory=REPLACE_RELEASE_DIR
+ExecStart=REPLACE_RELEASE_DIR/.venv/bin/python -I -B -X utf8 REPLACE_RELEASE_DIR/scripts/presentation_copilot.py serve --runtime-config /etc/presentation-copilot/runtime.json
+Restart=on-failure
+RestartSec=15
+TimeoutStopSec=70
+KillSignal=SIGTERM
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/presentation-copilot
+Environment=PYTHONDONTWRITEBYTECODE=1
+# Provisional 2 GiB single-task host limits; verify whole-host export peaks.
+MemoryHigh=1100M
+MemoryMax=1280M
+CPUQuota=150%
+TasksMax=64
+LimitNOFILE=1024
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,15 @@
+{
+  "window_seconds": 86400,
+  "text": 0,
+  "image": 0,
+  "credits": 0,
+  "active_tasks": 1,
+  "service_concurrency": 1,
+  "queue": 2,
+  "pages": 20,
+  "input_bytes": 131072,
+  "upload_bytes": 20971520,
+  "storage_bytes": 209715200,
+  "projects": 20,
+  "new_visitors_per_hour": 60
+}
