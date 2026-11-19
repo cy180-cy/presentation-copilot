@@ -15,6 +15,7 @@ const templateI18n = {
       cannotDeleteInUse: "当前使用中的模板不能删除，请先取消选择或切换",
       presets: {
         retroScroll: "复古卷轴", vectorIllustration: "矢量插画", glassEffect: "拟物玻璃",
+        minimalBusiness: "极简商务", warmEditorial: "暖色杂志", sageAcademic: "清新学术", midnightTech: "深色科技",
         techBlue: "科技蓝", simpleBusiness: "简约商务", academicReport: "学术报告"
       },
       messages: { uploadSuccess: "模板上传成功", uploadFailed: "模板上传失败", deleteSuccess: "模板已删除", deleteFailed: "删除模板失败" }
@@ -30,6 +31,7 @@ const templateI18n = {
       cannotDeleteInUse: "Cannot delete template in use, please deselect or switch first",
       presets: {
         retroScroll: "Retro Scroll", vectorIllustration: "Vector Illustration", glassEffect: "Glass Effect",
+        minimalBusiness: "Minimal Business", warmEditorial: "Warm Editorial", sageAcademic: "Sage Academic", midnightTech: "Midnight Tech",
         techBlue: "Tech Blue", simpleBusiness: "Simple Business", academicReport: "Academic Report"
       },
       messages: { uploadSuccess: "Template uploaded successfully", uploadFailed: "Failed to upload template", deleteSuccess: "Template deleted", deleteFailed: "Failed to delete template" }
@@ -53,6 +55,10 @@ export const PRESET_TEMPLATES = [
   { id: '1', nameKey: 'template.presets.retroScroll', preview: publicAssetPath('/templates/template_y.png'), thumb: publicAssetPath('/templates/template_y-thumb.webp') },
   { id: '2', nameKey: 'template.presets.vectorIllustration', preview: publicAssetPath('/templates/template_vector_illustration.png'), thumb: publicAssetPath('/templates/template_vector_illustration-thumb.webp') },
   { id: '3', nameKey: 'template.presets.glassEffect', preview: publicAssetPath('/templates/template_glass_clean_v1.png'), thumb: publicAssetPath('/templates/template_glass_clean_v1-thumb.webp') },
+  { id: '4', nameKey: 'template.presets.minimalBusiness', preview: publicAssetPath('/templates/template_minimal_business_v1.png'), thumb: publicAssetPath('/templates/template_minimal_business_v1-thumb.webp') },
+  { id: '5', nameKey: 'template.presets.warmEditorial', preview: publicAssetPath('/templates/template_warm_editorial_v1.png'), thumb: publicAssetPath('/templates/template_warm_editorial_v1-thumb.webp') },
+  { id: '6', nameKey: 'template.presets.sageAcademic', preview: publicAssetPath('/templates/template_sage_academic_v1.png'), thumb: publicAssetPath('/templates/template_sage_academic_v1-thumb.webp') },
+  { id: '7', nameKey: 'template.presets.midnightTech', preview: publicAssetPath('/templates/template_midnight_tech_v1.png'), thumb: publicAssetPath('/templates/template_midnight_tech_v1-thumb.webp') },
 ];
 
 interface TemplateSelectorProps {

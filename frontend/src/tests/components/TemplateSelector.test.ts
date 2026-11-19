@@ -58,6 +58,36 @@ describe('getTemplateFile', () => {
     expect(file).toBeNull();
   });
 
+  it.each([
+    ['4', 'minimal_business'], ['5', 'warm_editorial'],
+    ['6', 'sage_academic'], ['7', 'midnight_tech'],
+  ])('loads public template %s using its displayed full-resolution reference', async (id, slug) => {
+    const preset = PRESET_TEMPLATES.find(item => item.id === id)!;
+    const filename = `template_${slug}_v1.png`;
+    expect(preset.preview).toBe(`/templates/${filename}`);
+    expect(preset.thumb).toBe(`/templates/template_${slug}_v1-thumb.webp`);
+    const bytes = readFileSync(resolve(`public/templates/${filename}`));
+    expect([...bytes.subarray(0, 8)]).toEqual([137, 80, 78, 71, 13, 10, 26, 10]);
+    const thumbnail = readFileSync(resolve(`public/templates/template_${slug}_v1-thumb.webp`));
+    expect(thumbnail.subarray(8, 12).toString()).toBe('WEBP');
+    const fetch = vi.spyOn(globalThis, 'fetch').mockResolvedValue({ ok: true,
+      headers: new Headers({ 'content-type': 'image/png' }),
+      blob: async () => new Blob([bytes], { type: 'image/png' }),
+    } as Response);
+    const file = await getTemplateFile(id, []);
+    expect(fetch).toHaveBeenCalledOnce();
+    expect(fetch).toHaveBeenCalledWith(preset.preview);
+    expect(file?.name).toBe(filename);
+    const saved = await new Promise<ArrayBuffer>((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result as ArrayBuffer);
+      reader.onerror = reject;
+      reader.readAsArrayBuffer(file!);
+    });
+    expect(createHash('sha256').update(new Uint8Array(saved)).digest('hex'))
+      .toBe(createHash('sha256').update(bytes).digest('hex'));
+  });
+
   it('displays and sends the same versioned clean glass reference bytes', async () => {
     const preset = PRESET_TEMPLATES.find(item => item.id === '3')!;
     expect(preset.preview).toBe('/templates/template_glass_clean_v1.png');
