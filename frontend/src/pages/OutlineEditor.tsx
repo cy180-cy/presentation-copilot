@@ -608,7 +608,7 @@ export const OutlineEditor: React.FC = () => {
       {/* 操作栏 - 与 DetailEditor 风格一致 */}
       <div className="bg-white dark:bg-background-secondary border-b border-gray-200 dark:border-border-primary px-3 md:px-6 py-3 md:py-4 flex-shrink-0">
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2 sm:gap-3">
-          <div className="flex flex-wrap items-center gap-2 sm:gap-3 flex-1 min-w-0 [&>button]:shrink-0 [&>button]:whitespace-nowrap">
+          <div className="relative flex flex-wrap items-center gap-2 sm:gap-3 flex-1 min-w-0 [&>button]:shrink-0 [&>button]:whitespace-nowrap">
             <Button
               variant="primary"
               icon={<Plus size={16} className="md:w-[18px] md:h-[18px]" />}
@@ -639,7 +639,7 @@ export const OutlineEditor: React.FC = () => {
               </Button>
             )}
             {/* 设置 popover */}
-            <div className="relative shrink-0" ref={settingsRef}>
+            <div className="shrink-0" ref={settingsRef}>
               <Button
                 variant="ghost"
                 size="sm"
@@ -648,7 +648,7 @@ export const OutlineEditor: React.FC = () => {
                 title={t('outline.outlineRequirements')}
               />
               {settingsOpen && (
-                <div className="absolute top-full left-0 mt-1 z-50 w-80 rounded-xl border border-gray-200 dark:border-border-primary bg-white dark:bg-background-secondary shadow-lg dark:shadow-none p-4 space-y-3">
+                <div className="absolute top-full left-0 mt-2 z-50 w-full max-w-xs max-h-[70vh] overflow-y-auto rounded-xl border border-gray-200 dark:border-border-primary bg-white dark:bg-background-secondary shadow-lg dark:shadow-none p-4 space-y-3">
                   <label className="flex items-center gap-1 text-xs font-medium text-gray-600 dark:text-foreground-tertiary">
                     {t('outline.outlineRequirements')}
                   </label>

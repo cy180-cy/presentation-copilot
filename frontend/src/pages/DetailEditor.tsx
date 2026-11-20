@@ -771,7 +771,7 @@ export const DetailEditor: React.FC = () => {
           </div>
         ) : (
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2 sm:gap-3">
-          <div className="flex items-center gap-2 sm:gap-3 flex-1">
+          <div className="relative flex flex-wrap items-center gap-2 sm:gap-3 flex-1 min-w-0 [&>button]:shrink-0 [&>button]:whitespace-nowrap">
             <Button
               variant="primary"
               icon={<Sparkles size={16} className="md:w-[18px] md:h-[18px]" />}
@@ -783,7 +783,7 @@ export const DetailEditor: React.FC = () => {
             </Button>
 
             {/* 描述设置面板 */}
-            <div className="relative" ref={settingsRef}>
+            <div className="shrink-0" ref={settingsRef}>
               <Button
                 variant="ghost"
                 size="sm"
@@ -792,7 +792,7 @@ export const DetailEditor: React.FC = () => {
                 title={t('detail.descSettings')}
               />
               {settingsOpen && (
-                <div className="absolute top-full left-0 mt-1 z-50 w-80 rounded-xl border border-gray-200 dark:border-border-primary bg-white dark:bg-background-secondary shadow-lg dark:shadow-none p-4 space-y-4">
+                <div className="absolute top-full left-0 mt-2 z-50 w-full max-w-xs max-h-[70vh] overflow-y-auto rounded-xl border border-gray-200 dark:border-border-primary bg-white dark:bg-background-secondary shadow-lg dark:shadow-none p-4 space-y-4">
                   {/* 生成模式 */}
                   <div>
                     <label className="flex items-center gap-1 text-xs font-medium text-gray-600 dark:text-foreground-tertiary mb-1.5">
@@ -951,7 +951,7 @@ export const DetailEditor: React.FC = () => {
 
             <div className="w-px h-6 bg-gray-200 dark:bg-border-primary flex-shrink-0" />
             {/* 导入导出下拉菜单 */}
-            <div className="relative" ref={fileMenuRef}>
+            <div className="relative shrink-0 whitespace-nowrap" ref={fileMenuRef}>
               <Button
                 variant="secondary"
                 onClick={() => setFileMenuOpen(!fileMenuOpen)}

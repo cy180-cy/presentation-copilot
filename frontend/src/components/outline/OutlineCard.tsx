@@ -123,7 +123,7 @@ export const OutlineCard: React.FC<OutlineCardProps> = ({
         {/* 拖拽手柄 */}
         <div
           {...dragHandleProps}
-          className="flex-shrink-0 cursor-move text-gray-400 hover:text-gray-600 pt-1"
+          className="absolute left-0 top-0 md:static flex-shrink-0 cursor-move text-gray-400 hover:text-gray-600 pt-1"
         >
           <GripVertical size={20} />
         </div>
@@ -131,13 +131,13 @@ export const OutlineCard: React.FC<OutlineCardProps> = ({
         {/* 内容区 */}
         <div className="flex-1 min-w-0">
           {/* 页码和章节 */}
-          <div className="flex items-center gap-2 mb-2">
-            <span className="text-sm font-semibold text-gray-900 dark:text-foreground-primary">
+          <div className={`flex flex-wrap items-center gap-2 mb-2 min-h-9 pl-8 md:min-h-0 md:pl-0 md:pr-0 ${isEditing ? '' : 'pr-24'}`}>
+            <span className="shrink-0 text-sm font-semibold text-gray-900 dark:text-foreground-primary">
               {t('outlineCard.page', { num: index + 1 })}
             </span>
             {index === 0 && !isEditing && (
               <span
-                className="text-xs px-1.5 py-0.5 bg-banana-100 dark:bg-banana-900/30 text-banana-700 dark:text-banana-400 rounded"
+                className="shrink-0 text-xs px-1.5 py-0.5 bg-banana-100 dark:bg-banana-900/30 text-banana-700 dark:text-banana-400 rounded"
                 title={t('outlineCard.coverPageTooltip')}
               >
                 {t('outlineCard.coverPage')}
@@ -154,7 +154,7 @@ export const OutlineCard: React.FC<OutlineCardProps> = ({
               />
             ) : (
               page.part && (
-                <span className="text-xs px-2 py-0.5 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 rounded">
+                <span className="min-w-0 break-words text-xs px-2 py-0.5 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 rounded">
                   {page.part}
                 </span>
               )
@@ -204,10 +204,10 @@ export const OutlineCard: React.FC<OutlineCardProps> = ({
           ) : (
             /* 查看模式 */
             <div>
-              <h4 className="font-semibold text-gray-900 dark:text-foreground-primary mb-2">
+              <h4 className="break-words font-semibold text-gray-900 dark:text-foreground-primary mb-2">
                 {outline.title}
               </h4>
-              <div className="text-gray-600 dark:text-foreground-tertiary">
+              <div className="break-words text-gray-600 dark:text-foreground-tertiary">
                 <Markdown>{outline.points.join('\n')}</Markdown>
               </div>
             </div>
@@ -216,13 +216,13 @@ export const OutlineCard: React.FC<OutlineCardProps> = ({
 
         {/* 操作按钮 */}
         {!isEditing && (
-          <div className="flex-shrink-0 flex gap-2">
+          <div className="absolute right-0 top-0 md:static flex-shrink-0 flex gap-2">
             <button
               onClick={(e) => {
                 e.stopPropagation();
                 setIsEditing(true);
               }}
-              className="p-1.5 text-gray-500 dark:text-foreground-tertiary hover:text-banana-600 hover:bg-banana-50 dark:hover:bg-background-hover rounded transition-colors"
+              className="p-2.5 md:p-1.5 text-gray-500 dark:text-foreground-tertiary hover:text-banana-600 hover:bg-banana-50 dark:hover:bg-background-hover rounded transition-colors"
             >
               <Edit2 size={16} />
             </button>
@@ -235,7 +235,7 @@ export const OutlineCard: React.FC<OutlineCardProps> = ({
                   { title: t('outlineCard.confirmDeleteTitle'), variant: 'danger' }
                 );
               }}
-              className="p-1.5 text-gray-500 dark:text-foreground-tertiary hover:text-red-600 hover:bg-red-50 rounded transition-colors"
+              className="p-2.5 md:p-1.5 text-gray-500 dark:text-foreground-tertiary hover:text-red-600 hover:bg-red-50 rounded transition-colors"
             >
               <Trash2 size={16} />
             </button>
