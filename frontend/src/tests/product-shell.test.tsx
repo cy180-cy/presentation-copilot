@@ -63,6 +63,17 @@ it('shows neither a footer mode badge nor internal progress logs',()=>{
  expect(screen.getByText('50%')).toBeInTheDocument();
  expect(view.container).not.toHaveTextContent(/live|preview|预览|PC-010|配置|预算|模型|Provider/);
  expect(screen.getByRole('link',{name:'关于与开源说明'})).toBeInTheDocument();
+ expect(screen.queryByRole('link',{name:'豫公网安备41032902000430号'})).not.toBeInTheDocument();
+});
+
+it('links the homepage police filing badge to its official record and preserves the ICP link', () => {
+ render(<MemoryRouter><Footer showIcp /></MemoryRouter>);
+ const policeLink = screen.getByRole('link', { name: '豫公网安备41032902000430号' });
+ expect(policeLink).toHaveAttribute('href', 'https://beian.mps.gov.cn/#/query/webSearch?code=41032902000430');
+ expect(policeLink).toHaveAttribute('target', '_blank');
+ expect(policeLink).toHaveAttribute('rel', 'noopener noreferrer');
+ expect(policeLink.querySelector('img')).toHaveAttribute('src', '/filing/police-filing.png');
+ expect(screen.getByRole('link', { name: '豫ICP备2026058238号-1' })).toHaveAttribute('href', 'https://beian.miit.gov.cn/#/Integrated/recordQuery');
 });
 
 it('offers an honest fallback without a fabricated source URL', async () => {
